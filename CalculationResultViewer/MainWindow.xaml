@@ -8,14 +8,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="200" Width="400"
         x:Name="window">
-    <Window.DataContext>
-        <vm:EnterViewModel/>
-    </Window.DataContext>
     <StackPanel VerticalAlignment="Center">
         <Label Content="Логин" HorizontalAlignment="Center"></Label>
-        <TextBox Width="200" HorizontalAlignment="Center" Text="{Binding Path=Login}"></TextBox>
+        <TextBox Name="tbLogin" Width="200" HorizontalAlignment="Center"></TextBox>
         <Label Content="Пароль" HorizontalAlignment="Center"></Label>
-        <TextBox Width="200" Text="{Binding Password}" HorizontalAlignment="Center"></TextBox>
-        <Button Width="100" Content="Войти" Margin="10" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=window, Mode=OneWay}"/>
+        <PasswordBox Name="pbPassword" Width="200" HorizontalAlignment="Center"></PasswordBox>
+        <Button Width="100" Content="Войти" Margin="10" Click="enterApp"/>
     </StackPanel>
 </Window>

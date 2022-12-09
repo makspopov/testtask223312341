@@ -49,10 +49,6 @@ namespace CalculationResultViewer
                     OleDbDataReader reader = select.ExecuteReader();
                     reader.Read();
                     countRows = reader.GetInt32(0);
-                    //while (reader.Read())
-                    //{
-                    //    lst.Add(new Result() { cells = reader.GetString(0), val = reader.GetDouble(1) });
-                    //}
                 }
                 finally
                 {
