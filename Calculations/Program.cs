@@ -3,8 +3,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using System.Data.OleDb;
-using System.Data;
+//using System.Data.OleDb;
+//using System.Data;
+using Microsoft.Data.Sqlite;
 //using ADOX;
 
 var dct = File.ReadAllLines(@"D:\Работа\source\NotepadClones\CalculationResultViewer\Input Data_ПО.csv")
@@ -48,24 +49,25 @@ var res_rows = cols.SelectMany(col => rows.Select(row => new
 //}
 
 
-//SQLiteConnection.CreateFile("MyDatabase.sqlite");
+SqliteConnection.CreateFile("MyDatabase.sqlite");
+//SqliteConnection.
 
-//SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=MyDatabase.sqlite;Version=3;");
-//m_dbConnection.SetPassword("admin"); 
-//m_dbConnection.Open();
+SqliteConnection m_dbConnection = new SqliteConnection("Data Source=MyDatabase.sqlite;Version=3;");
+m_dbConnection.SetPassword("admin");
+m_dbConnection.Open();
 
-//string sql = "create table results (cells varchar(20), value real)";
+string sql = "create table results (cells varchar(20), value real)";
 
-//SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-//command.ExecuteNonQuery();
+SqliteCommand command = new SqliteCommand(sql, m_dbConnection);
+command.ExecuteNonQuery();
 
-//res_rows.ForEach(row =>
-//{
-//    sql = $"insert into results (cells, real) values ('{row.cells}', {row.value})";
+res_rows.ForEach(row =>
+{
+    sql = $"insert into results (cells, real) values ('{row.cells}', {row.value})";
 
-//    command = new SQLiteCommand(sql, m_dbConnection);
-//    command.ExecuteNonQuery();
-//});
+    command = new SqliteCommand(sql, m_dbConnection);
+    command.ExecuteNonQuery();
+});
 
 //m_dbConnection.Close();
 
@@ -92,6 +94,8 @@ var res_rows = cols.SelectMany(col => rows.Select(row => new
 //    db.Results.AddRange(lst);
 //    db.SaveChanges();
 //}
+
+
 //// получение данных
 //using (ApplicationContext db = new ApplicationContext())
 //{
@@ -106,57 +110,61 @@ var res_rows = cols.SelectMany(col => rows.Select(row => new
 
 
 
-string FilePath = "C:\\Users\\max35\\Documents\\Тестовое тз\\1\\4.mdb";
-string OledbConnectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Jet OLEDB:Database Password=admin;Persist Security Info=False;", FilePath);
-using (OleDbConnection con = new OleDbConnection(OledbConnectionString))
-{
-    con.Open();
 
 
 
-    //string sql = string.Empty;
-    //sql = string.Format("ALTER DATABASE PASSWORD 'Admin' '1' ");
-    //OleDbCommand cmd = new OleDbCommand(sql, con);
+
+//string FilePath = "C:\\Users\\max35\\Documents\\Тестовое тз\\1\\4.mdb";
+//string OledbConnectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Jet OLEDB:Database Password=admin;Persist Security Info=False;", FilePath);
+//using (OleDbConnection con = new OleDbConnection(OledbConnectionString))
+//{
+//    con.Open();
 
 
-    try
-    {
-        //res_rows.ForEach(x => Console.WriteLine($"{x.cells} - {x.value}"));
-        res_rows.Select((v, i) => new { i, v.cells, v.value }).ToList().ForEach(x =>
-        {
-            OleDbCommand cmd = new OleDbCommand();
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "INSERT INTO results (id, cells, COL_VALUES) VALUES (@id, @cells, @value1);";
-            //cmd.CommandText = "INSERT INTO results (id, cells) VALUES (@id, @cells);";
-            //cmd.CommandText = "INSERT INTO results (id) VALUES (@id);";
-            //cmd.CommandText = $"INSERT INTO results (id, cells, value) VALUES ({x.i}, '{x.cells}', {x.value}); ";
-            //cmd.CommandText = $"INSERT INTO results (id, cells, value) VALUES ('{x.i}', '{x.cells}', '{x.value.ToString().Replace(",", ".")}'); ";
-            //cmd.CommandText = $"INSERT INTO results (id, cells, value) VALUES ('{x.i}', '{x.cells}', '{x.value.ToString().Replace(",", ".")}'); ";
-            cmd.Parameters.AddWithValue("@id", x.i);
-            cmd.Parameters.AddWithValue("@cells", x.cells);
-            //cmd.Parameters.AddWithValue("@value", x.value.ToString().Replace(",", "."));
-            //cmd.Parameters.AddWithValue("@value1", x.value.ToString(CultureInfo.InvariantCulture));
-            cmd.Parameters.AddWithValue("@value1", x.value);
-            cmd.Connection = con;
-            cmd.ExecuteNonQuery();
-        });
+
+//    //string sql = string.Empty;
+//    //sql = string.Format("ALTER DATABASE PASSWORD 'Admin' '1' ");
+//    //OleDbCommand cmd = new OleDbCommand(sql, con);
 
 
-        //OleDbCommand select = new OleDbCommand();
-        //select.Connection = con;
-        //select.CommandText = "Select cells From Results ";
-        //OleDbDataReader reader = select.ExecuteReader();
-        //while (reader.Read())
-        //{
-        //    //listBox1.Items.Add(reader[1].ToString() + "," + reader[2].ToString());
-        //    Console.WriteLine(reader.GetString(0));
-        //}
-    }
-    finally
-    {
-        con.Close();
-    }
-}
+//    try
+//    {
+//        //res_rows.ForEach(x => Console.WriteLine($"{x.cells} - {x.value}"));
+//        res_rows.Select((v, i) => new { i, v.cells, v.value }).ToList().ForEach(x =>
+//        {
+//            OleDbCommand cmd = new OleDbCommand();
+//            cmd.CommandType = CommandType.Text;
+//            cmd.CommandText = "INSERT INTO results (id, cells, COL_VALUES) VALUES (@id, @cells, @value1);";
+//            //cmd.CommandText = "INSERT INTO results (id, cells) VALUES (@id, @cells);";
+//            //cmd.CommandText = "INSERT INTO results (id) VALUES (@id);";
+//            //cmd.CommandText = $"INSERT INTO results (id, cells, value) VALUES ({x.i}, '{x.cells}', {x.value}); ";
+//            //cmd.CommandText = $"INSERT INTO results (id, cells, value) VALUES ('{x.i}', '{x.cells}', '{x.value.ToString().Replace(",", ".")}'); ";
+//            //cmd.CommandText = $"INSERT INTO results (id, cells, value) VALUES ('{x.i}', '{x.cells}', '{x.value.ToString().Replace(",", ".")}'); ";
+//            cmd.Parameters.AddWithValue("@id", x.i);
+//            cmd.Parameters.AddWithValue("@cells", x.cells);
+//            //cmd.Parameters.AddWithValue("@value", x.value.ToString().Replace(",", "."));
+//            //cmd.Parameters.AddWithValue("@value1", x.value.ToString(CultureInfo.InvariantCulture));
+//            cmd.Parameters.AddWithValue("@value1", x.value);
+//            cmd.Connection = con;
+//            cmd.ExecuteNonQuery();
+//        });
+
+
+//        //OleDbCommand select = new OleDbCommand();
+//        //select.Connection = con;
+//        //select.CommandText = "Select cells From Results ";
+//        //OleDbDataReader reader = select.ExecuteReader();
+//        //while (reader.Read())
+//        //{
+//        //    //listBox1.Items.Add(reader[1].ToString() + "," + reader[2].ToString());
+//        //    Console.WriteLine(reader.GetString(0));
+//        //}
+//    }
+//    finally
+//    {
+//        con.Close();
+//    }
+//}
 
 public class Results
 {

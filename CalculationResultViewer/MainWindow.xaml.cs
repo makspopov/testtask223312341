@@ -29,40 +29,47 @@ namespace CalculationResultViewer
 
         private void enterApp(object sender, RoutedEventArgs e)
         {
-            var Login = tbLogin.Text;
-            var Password = pbPassword.Password;
-            var dct = new Dictionary<string, string>();
-            string FilePath = System.IO.Path.Combine(AppContext.BaseDirectory, "4.mdb");
-            string OledbConnectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Jet OLEDB:Database Password=admin;Mode=ReadWrite|Share Deny None;Persist Security Info=False;", FilePath);
-            using (OleDbConnection con = new OleDbConnection(OledbConnectionString))
+            try
             {
-                con.Open();
-
-                try
+                var Login = tbLogin.Text;
+                var Password = pbPassword.Password;
+                var dct = new Dictionary<string, string>();
+                string FilePath = System.IO.Path.Combine(AppContext.BaseDirectory, "4.mdb");
+                string OledbConnectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Jet OLEDB:Database Password=admin;Mode=ReadWrite|Share Deny None;Persist Security Info=False;", FilePath);
+                using (OleDbConnection con = new OleDbConnection(OledbConnectionString))
                 {
-                    OleDbCommand select = new OleDbCommand();
-                    select.Connection = con;
-                    select.CommandText = "Select col_login, col_password From users ";
-                    OleDbDataReader reader = select.ExecuteReader();
-                    while (reader.Read())
+                    con.Open();
+
+                    try
                     {
-                        dct.Add(reader.GetString(0), reader.GetString(1));
+                        OleDbCommand select = new OleDbCommand();
+                        select.Connection = con;
+                        select.CommandText = "Select col_login, col_password From users ";
+                        OleDbDataReader reader = select.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            dct.Add(reader.GetString(0), reader.GetString(1));
+                        }
+                    }
+                    finally
+                    {
+                        con.Close();
                     }
                 }
-                finally
+                if (dct.ContainsKey(Login) && dct[Login] == Password)
                 {
-                    con.Close();
+                    MainView mainView = new MainView();
+                    mainView.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Неверный пароль!");
                 }
             }
-            if (dct.ContainsKey(Login) && dct[Login] == Password)
+            catch (Exception ex)
             {
-                MainView mainView = new MainView();
-                mainView.Show();
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("Неверный пароль!");
+                MessageBox.Show("Попробуйте запустить приложение с правами администратора! " + ex.Message);
             }
         }
     }
